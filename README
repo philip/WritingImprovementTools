@@ -1,0 +1,14 @@
+## What this does ##
+
+These tools will help us write.
+
+## Credits ##
+
+Originally this was a port from the following source:
+
+ - http://matt.might.net/articles/shell-scripts-for-passive-voice-weasel-words-duplicates/
+
+Where the shell scripts (e.g., weasel.sh) were rewritten in PHP. Then, it was expanded.
+
+Also, David Tajchreber was kind enough to help brain storm and improve the code. 
+
