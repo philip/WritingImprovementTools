@@ -1,5 +1,5 @@
 <?php
-$opts = getopt('p:h:');
+$opts = getopt('p:h:s:');
 
 if (isset($opts['h'])) {
 	usage();
@@ -12,6 +12,12 @@ if (!is_dir($opts['p'])) {
 	echo "ERROR: - Please pass in a real directory, unlike this mysterious '$opts[p]'" . PHP_EOL;
 	usage();
 }
+if (isset($opts['s'])) {
+	$save = true;
+} else {
+	$save = false;
+}
+
 
 // @todo spacing here feels hackish
 // @bug eol weasels are lost, but \b or \s* causes 4x performance issues. research this.
@@ -38,27 +44,43 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($opts['p']
 	}
 
 	// @todo prettier output
-	echo '--------------------------------------------------' . PHP_EOL;
-	echo 'File path: ' . $filepath . PHP_EOL . PHP_EOL;
-	printf("%-8s|%-20s|%s" . PHP_EOL, "Line #", "Weasel", "Full Line");
-	echo '--------------------------------------------------' . PHP_EOL;
+	if (!$save) {
+		echo '--------------------------------------------------' . PHP_EOL;
+		echo 'File path: ' . $filepath . PHP_EOL . PHP_EOL;
+		printf("%-8s|%-20s|%s" . PHP_EOL, "Line #", "Weasel", "Full Line");
+		echo '--------------------------------------------------' . PHP_EOL;
+	}
 	
 	foreach ($lines as $line_number => $line) {
+		++$line_number;
 		
 		preg_match_all("/($weasels)/i", $line, $matches, PREG_OFFSET_CAPTURE);
 		
 		if (!empty($matches[1])) {
-			printf("%-8d|%-20s|%s" . PHP_EOL, $line_number+1, trim($matches[1][0][0]), trim($line));
+			
+			$weasel = trim($matches[1][0][0]);
+			$line   = trim($line);
+			
+			if (!$save) {
+				printf("%-8d|%-20s|%s" . PHP_EOL, $line_number, $weasel, $line);
+			} else {
+				$saved[$filepath][] = array('line_number' => $line_number, 'weasel' => $weasel, 'line' => $line);
+			}
 			++$count;
 		}
-		
 	}
+}
+
+if ($save) {
+	echo '<?php', PHP_EOL, var_export($saved), PHP_EOL, '?>';
 }
 
 echo PHP_EOL . "Found $count weasels." . PHP_EOL;
 
 function usage() {
 	echo "USAGE:" . PHP_EOL;
-	echo "$ php {$_SERVER['SCRIPT_FILENAME']} -p /path/to/check" . PHP_EOL;
+	echo "Optional: '-s 1' will var_export the results as a PHP array" . PHP_EOL;
+	echo "Ex: $ php {$_SERVER['SCRIPT_FILENAME']} -p /path/to/check" . PHP_EOL;
+	echo "Ex: $ php {$_SERVER['SCRIPT_FILENAME']} -p /path/to/check -s 1 > weasels_array.php" . PHP_EOL;	
 	exit;
 }
