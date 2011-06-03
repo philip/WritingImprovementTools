@@ -1,7 +1,7 @@
 <?php
 $opts = getopt('p:h:s:');
 
-if (isset($opts['h'])) {
+if (isset($opts['h']) || empty($opts)) {
 	usage();
 }
 if (empty($opts['p'])) {
@@ -79,7 +79,8 @@ echo PHP_EOL . "Found $count weasels." . PHP_EOL;
 
 function usage() {
 	echo "USAGE:" . PHP_EOL;
-	echo "Optional: '-s 1' will var_export the results as a PHP array" . PHP_EOL;
+	echo "Required: '-p /path/to/check' is a path to files needing checked. Recursive." . PHP_EOL;
+	echo "Optional: '-s 1' will var_export the results as a PHP array [default: 0]" . PHP_EOL;
 	echo "Ex: $ php {$_SERVER['SCRIPT_FILENAME']} -p /path/to/check" . PHP_EOL;
 	echo "Ex: $ php {$_SERVER['SCRIPT_FILENAME']} -p /path/to/check -s 1 > weasels_array.php" . PHP_EOL;	
 	exit;
