@@ -5,11 +5,11 @@ if (isset($opts['h'])) {
 	usage();
 }
 if (empty($opts['p'])) {
-	echo "\nERROR:\n - A path to your files is required\n";
+	echo "ERROR: - A path to your files is required" . PHP_EOL;
 	usage();
 }
 if (!is_dir($opts['p'])) {
-	echo "\nERROR:\n - Please pass in a real directory, unlike this mysterious '$opts[p]'\n";
+	echo "ERROR: - Please pass in a real directory, unlike this mysterious '$opts[p]'" . PHP_EOL;
 	usage();
 }
 
@@ -58,7 +58,7 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($opts['p']
 echo PHP_EOL . "Found $count weasels." . PHP_EOL;
 
 function usage() {
-	echo "\nUSAGE:\n";
+	echo "USAGE:" . PHP_EOL;
 	echo "$ php {$_SERVER['SCRIPT_FILENAME']} -p /path/to/check" . PHP_EOL;
 	exit;
 }
